@@ -1,80 +1,79 @@
-#-*- coding:utf-8 -*-
-from tkinter import *
-from threading import *
-import socket
+import socket, threading
+
+class Room: 
+    def __init__(self):
+        self.clients = []
+        self.allChat=None
+
+    def addClient(self, c):  # add Client
+        self.clients.append(c)
+
+    def delClient(self, c): # delete Client
+        self.clients.remove(c)
+
+    def sendMsgAll(self, msg):  # 채팅방에 있는 모든 사람한테 메시지 전송
+        for i in self.clients:
+            print(i)
+            i.sendMsg(msg)
 
 
-global client_1, client_2
-client_1 = ''
-client_2 = ''
-name1 =  ''
-name2 =  ''
+class ChatClient:  
+    def __init__(self, r, soc):
+        self.room = r  
+        self.id = None  # Client id
+        self.soc = soc  
 
-IP = "127.0.0.01" # default IP
-PORT = "2500" # default Port
+    def readMsg(self):
+        self.id = self.soc.recv(1024).decode()
+        msg = self.id + '님이 입장하셨습니다'
+        self.room.sendMsgAll(msg)
 
-class createServer:
-    def __init__(self, UI):
-        self.ui = UI
-        UI.title("201744021 송휘 - Server")
-        UI.geometry("200x100")
-        self.mainFrame = Frame(self.ui)
-        self.mainFrame.pack(fill = X)
+        while True:
+            msg = self.soc.recv(1024).decode()  # 사용자가 전송한 메시지 읽음
+            if msg == '/종료':  # 종료 메시지이면 루프 종료
+                self.soc.sendall(msg.encode(encoding='utf-8'))  # 이 메시지를 보낸 한명에게만 전송
+                self.room.delClient(self)
+                break
+            msg = self.id+': '+ msg
+            self.room.sendMsgAll(msg)  # 모든 사용자에 메시지 전송
+        self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')
 
-        self.subFrame = Frame(self.ui)
-        self.subFrame.pack(fill = X)
-        self.subFrame1 = Frame(self.ui)
-        self.subFrame1.pack(fill = X)
-        self.subFrame2 = Frame(self.ui)
-        self.subFrame2.pack(fill = X)
-        self.subFrame3 = Frame(self.ui)
-        self.subFrame3.pack(fill = X)
-
-        self.label = Label(self.subFrame, text = "채팅방 생성")
-        self.label.pack(side = TOP)
+    def sendMsg(self, msg):
+        self.soc.sendall(msg.encode(encoding='utf-8'))
 
 
-        self.emptylabel1 = Label(self.subFrame1, text = "   ")
-        self.emptylabel1.pack(side = LEFT)
-        self.label1 = Label(self.subFrame1, text = "IP                           ")
-        self.label1.pack(side = LEFT)
-        self.label2 = Label(self.subFrame1, text = "PORT")
-        self.label2.pack(side = LEFT)
+class ChatServer:
+    ip = '127.0.0.1'  # default
+    port = 2500
 
-        self.emptylabel2 = Label(self.subFrame2, text = "   ")
-        self.emptylabel2.pack(side = LEFT)
-        self.entry1 = Entry(self.subFrame2, width = 15)
-        self.entry1.pack(side = LEFT)
-        self.emptylabel3 = Label(self.subFrame2, text = "   ")
-        self.emptylabel3.pack(side = LEFT)
-        self.entry2 = Entry(self.subFrame2, width = 5)
-        self.entry2.pack(side = LEFT)
-        self.button = Button(self.subFrame3, text = "연결", width = 10, height = 2, command = self.openserver)
-        self.button.pack(side = TOP)
+    def __init__(self):
+        self.server_soc = None
+        self.room = Room()
 
-    def openserver(self):
-        global IP, PORT
-        IP = self.entry1.get()
-        PORT = int(self.entry2.get())
-        self.ui.quit()
-        self.ui.destroy()
+    def open(self):
+        self.server_soc = socket.socket() # TCP socket (socket.AF_INET, socket.SOCK_STREAM)
+        self.server_soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server_soc.bind((ChatServer.ip, ChatServer.port))
+        self.server_soc.listen()
 
-root = Tk()
-app = createServer(root) 
-root.mainloop()
-server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_sock.bind((IP,PORT))
-server_sock.listen(2)
-count = 0
-connection = 0
+    def run(self):
+        self.open()
+        print('Server Opened')
 
-def socket1():
-    
-    count += 1
-    client1, addr1 = server_sock.accept()
-    print("[알림] :{0} 연결".format(str(addr1[1])))
-    connection+=1
-    name1 = client1.recv(65535)
-    sendmessage("[System] {0}님이 입장하셨습니다.".format(name1))
-    while True:
-        data1 = client1.recv(65535)
+        while True:
+            client_soc, addr = self.server_soc.accept()
+            print(addr, 'Connected')
+            c = ChatClient(self.room, client_soc)
+            self.room.addClient(c)
+            th = threading.Thread(target=c.readMsg)
+            th.start()
+
+        self.server_soc.close()
+
+
+def main():
+    cs = ChatServer()
+    cs.run()
+
+
+main()
