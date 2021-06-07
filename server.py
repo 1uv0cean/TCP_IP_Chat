@@ -2,7 +2,7 @@
 import socket
 import threading
 
-class Room: 
+class room: 
     def __init__(self):
         self.clients = []
         self.allChat=None
@@ -18,7 +18,7 @@ class Room:
             i.Send(msg)
 
 
-class ChatClient:  
+class chatClient:  
     def __init__(self, r, soc):
         self.room = r  
         self.id = None  # Client id
@@ -43,18 +43,18 @@ class ChatClient:
         self.soc.sendall(msg.encode(encoding='utf-8'))
 
 
-class ChatServer:
+class chatServer:
     svrIP = '127.0.0.1'  # default
     port = 2500
 
     def __init__(self):
         self.server_soc = None
-        self.room = Room()
+        self.room = room()
 
     def open(self):
         self.server_soc = socket.socket() # TCP socket (socket.AF_INET, socket.SOCK_STREAM)
         self.server_soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server_soc.bind((ChatServer.svrIP, ChatServer.port))
+        self.server_soc.bind((chatServer.svrIP, chatServer.port))
         self.server_soc.listen()
 
     def run(self):
@@ -64,7 +64,7 @@ class ChatServer:
         while True:
             client_soc, addr = self.server_soc.accept()
             print(addr, 'Connected')
-            c = ChatClient(self.room, client_soc)
+            c = chatClient(self.room, client_soc)
             self.room.addClient(c)
             th = threading.Thread(target=c.Recv)
             th.start()
@@ -73,7 +73,7 @@ class ChatServer:
 
 
 def main():
-    cs = ChatServer()
+    cs = chatServer()
     cs.run()
 
 

@@ -7,6 +7,7 @@ from tkinter import *
 class ChatClient:
     svrIP = '127.0.0.1'
     port = 2500
+    name = ''
     
     def conn(self):
         self.client_sock = socket.socket() # TCP Socket (socket.AF_INET, socket.SOCK_STREAM)
@@ -27,11 +28,33 @@ class ChatClient:
         self.contents.place(x=10, y=10)
         self.chatinput.place(x = 10, y = 450)
         self.sendBtn.place(x = 300, y = 446)
-        self.chatinput.bind('<Return>', self.Send)
-        self.sendBtn.bind('<ButtonRelease-1>',self.Send)
+        self.chatinput.bind('<Return>', self.send)
+        self.sendBtn.bind('<ButtonRelease-1>',self.send)
 
-       
-    def Send(self,e): 
+    def userName(self):
+        self.popup = tk.Tk()
+        self.popup.wm_title("Set User Name")
+        self.label_name = tk.Label(self.popup, text="사용할 이름을 입력해주세요")
+        self.label_name.pack(side="top", fill="x", pady=10)
+        self.input_name = tk.Entry(self.popup, width = 10)
+        self.input_name.pack(fill="x")
+        self.okBtn = tk.Button(self.popup, text="입장", command = self.popup.destroy)
+        
+        self.okBtn.pack()
+        self.okBtn.bind('<ButtonRelease-1>',self.setUserName)
+        self.popup.mainloop()
+    
+    def setUserName(self,e): 
+        send_data = self.input_name.get()
+        self.input_name.delete(0, tk.END)
+        self.input_name.config(text='')
+        print(type(send_data))
+        send_data = send_data.encode(encoding='utf-8')
+        print(self.client_sock)
+        self.client_sock.sendall(send_data)
+        print('전송')
+
+    def send(self,e): 
         send_data = self.chatinput.get()
         self.chatinput.delete(0, tk.END)
         self.chatinput.config(text='')
@@ -42,7 +65,7 @@ class ChatClient:
         print('전송')
 
 
-    def Recv(self): 
+    def recv(self): 
         while True: 
             recv_data = self.client_sock.recv(1024).decode() + '\n' 
             print(recv_data) 
@@ -52,9 +75,10 @@ class ChatClient:
 
     def run(self):
         self.conn()
+        self.userName()
         self.ui()
 
-        thread = threading.Thread(target=self.Recv)
+        thread = threading.Thread(target=self.recv)
         thread.start()
 
         self.ui.mainloop()
