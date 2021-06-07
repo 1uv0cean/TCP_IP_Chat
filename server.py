@@ -13,8 +13,7 @@ class Room:
 
     def sendMsgAll(self, msg):  # 채팅방에 있는 모든 사람한테 메시지 전송
         for i in self.clients:
-            print(i)
-            i.sendMsg(msg)
+            i.Send(msg)
 
 
 class ChatClient:  
@@ -23,7 +22,7 @@ class ChatClient:
         self.id = None  # Client id
         self.soc = soc  
 
-    def readMsg(self):
+    def Recv(self):
         self.id = self.soc.recv(1024).decode()
         msg = self.id + '님이 입장하셨습니다'
         self.room.sendMsgAll(msg)
@@ -38,7 +37,7 @@ class ChatClient:
             self.room.sendMsgAll(msg)  # 모든 사용자에 메시지 전송
         self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')
 
-    def sendMsg(self, msg):
+    def Send(self, msg):
         self.soc.sendall(msg.encode(encoding='utf-8'))
 
 
@@ -65,7 +64,7 @@ class ChatServer:
             print(addr, 'Connected')
             c = ChatClient(self.room, client_soc)
             self.room.addClient(c)
-            th = threading.Thread(target=c.readMsg)
+            th = threading.Thread(target=c.Recv)
             th.start()
 
         self.server_soc.close()
