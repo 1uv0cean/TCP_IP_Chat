@@ -20,7 +20,7 @@ class TcpIpChat:
         self.ui = tk.Tk()
         self.ui.title('201744021 송휘 TCP/IP')
         self.ui.geometry('400x500')
-        self.contents = tk.Label(self.ui, width=43, height=30)
+        self.contents = tk.Label(self.ui, width=43, height=30, justify = "left")
         self.chatinput = tk.Entry(self.ui, width = 40)
         self.sendBtn = tk.Button(self.ui,width = 10, text = '전송')
 
