@@ -1,4 +1,6 @@
-import socket, threading
+#-*- coding:utf-8 -*-
+import socket
+import threading
 
 class Room: 
     def __init__(self):
@@ -11,7 +13,7 @@ class Room:
     def delClient(self, c): # delete Client
         self.clients.remove(c)
 
-    def sendMsgAll(self, msg):  # 채팅방에 있는 모든 사람한테 메시지 전송
+    def sendMsgAll(self, msg):  # send msg to all
         for i in self.clients:
             i.Send(msg)
 
