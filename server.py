@@ -30,13 +30,13 @@ class ChatClient:
         self.room.sendMsgAll(msg)
 
         while True:
-            msg = self.soc.recv(1024).decode()  # 사용자가 전송한 메시지 읽음
-            if msg == '/종료':  # 종료 메시지이면 루프 종료
-                self.soc.sendall(msg.encode(encoding='utf-8'))  # 이 메시지를 보낸 한명에게만 전송
+            msg = self.soc.recv(1024).decode()  # read msg
+            if msg == '/종료':  
+                self.soc.sendall(msg.encode(encoding='utf-8'))  # send exit msg to sender
                 self.room.delClient(self)
                 break
             msg = self.id+': '+ msg
-            self.room.sendMsgAll(msg)  # 모든 사용자에 메시지 전송
+            self.room.sendMsgAll(msg)  # send msg to all
         self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')
 
     def Send(self, msg):
@@ -44,7 +44,7 @@ class ChatClient:
 
 
 class ChatServer:
-    ip = '127.0.0.1'  # default
+    svrIP = '127.0.0.1'  # default
     port = 2500
 
     def __init__(self):
@@ -54,7 +54,7 @@ class ChatServer:
     def open(self):
         self.server_soc = socket.socket() # TCP socket (socket.AF_INET, socket.SOCK_STREAM)
         self.server_soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server_soc.bind((ChatServer.ip, ChatServer.port))
+        self.server_soc.bind((ChatServer.svrIP, ChatServer.port))
         self.server_soc.listen()
 
     def run(self):

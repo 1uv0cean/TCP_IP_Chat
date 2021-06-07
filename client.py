@@ -9,14 +9,12 @@ class ChatClient:
     port = 2500
     
     def conn(self):
-        # Connection
         self.client_sock = socket.socket() # TCP Socket (socket.AF_INET, socket.SOCK_STREAM)
-        self.client_sock.connect((ChatClient.svrIP, ChatClient.port)) # 서버로 연결시도 
+        self.client_sock.connect((ChatClient.svrIP, ChatClient.port)) # Try to connect server 
         print('Connected to ', ChatClient.svrIP, ChatClient.port) 
         self.allChat = ''
 
     def ui(self):
-        # GUI
         self.ui = tk.Tk()
         self.ui.title('201744021 송휘 TCP/IP')
         self.ui.geometry('400x490')
@@ -56,8 +54,8 @@ class ChatClient:
         self.conn()
         self.ui()
 
-        th2 = threading.Thread(target=self.Recv)
-        th2.start()
+        thread = threading.Thread(target=self.Recv)
+        thread.start()
 
         self.ui.mainloop()
 
