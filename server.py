@@ -1,6 +1,65 @@
 #-*- coding:utf-8 -*-
 import socket
 import threading
+import re, random
+
+class game:
+
+    def openDict(self): # open korean dictionary
+        with open('dict.txt', 'rt', encoding='utf-8') as self.f:
+            self.s = self.f.read()
+
+        self.pat = re.compile('^[ㄱ-ㅎ가-힣]+$')
+        self.wordDict = dict()
+        self.ivcSet = set()
+
+    def extractWord(self): # korean, word length >= 2
+        for i in sorted([i for i in self.s.split() if self.pat.match(i) and len(i) >= 2], key=lambda x:-len(x)):
+            if i[0] not in self.wordDict:
+                self.wordDict[i[0]] = set()
+            self.wordDict[i[0]].add(i)
+    
+    def deleteWord(self): # delete invincible words 
+        for i in self.wordDict:
+            self.delList = list()
+            for j in self.wordDict[i]:
+                if j[-1] not in self.wordDict:
+                    self.delList.append(j)
+            for j in self.delList:
+                self.ivcSet.add(j)
+                self.wordDict[i].remove(j)
+
+    def startGame(self): # start game
+        game.openDict(self)
+        game.extractWord(self)
+        game.deleteWord(self)
+        
+        msg = "-" * 50
+        self.room.sendMsgAll(msg)
+        msg = '게임을 시작합니다.\n시작단어: '
+        self.room.sendMsgAll(msg)
+        self.lastWord = random.choice(list(self.wordDict[random.choice(list(self.wordDict.keys()))]))
+        self.alreadySet = set()
+        self.alreadySet.add(self.lastWord)
+        self.room.sendMsgAll(self.lastWord)
+        while True:
+            msg = self.soc.recv(1024).decode()  # read msg
+            print(msg)
+            firstLetter = msg[0]
+            if firstLetter != self.lastWord[-1]:
+                msg = " [오류] '" + self.lastWord[-1] + "' (으)로 시작하는 단어를 입력하세요."
+            elif msg in self.ivcSet:
+                msg = ' [오류] 한방단어는 사용할 수 없습니다.'
+            elif msg in self.alreadySet:
+                msg = ' [오류] 이미 나온 단어입니다.'
+            elif msg not in self.wordDict.get(firstLetter, set()):
+                msg = ' [오류] 사전에 없는 단어입니다.'
+            else:
+                self.alreadySet.add(msg)
+                self.lastWord = msg
+                msg = self.id+': '+ msg  
+            self.room.sendMsgAll(msg)  # send msg to all 
+               
 
 class room: 
     def __init__(self):
@@ -35,6 +94,8 @@ class chatClient:
                 self.soc.sendall(msg.encode(encoding='utf-8'))  # send exit msg to sender
                 self.room.delClient(self)
                 break
+            if msg == '/시작':
+                game.startGame(self)
             msg = self.id+': '+ msg
             self.room.sendMsgAll(msg)  # send msg to all
         self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')

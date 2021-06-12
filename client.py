@@ -38,9 +38,10 @@ class ChatClient:
         self.label_name.pack(side="top", fill="x", pady=10)
         self.input_name = tk.Entry(self.popup, width = 10)
         self.input_name.pack(fill="x")
-        self.okBtn = tk.Button(self.popup, text="입장", command = self.popup.destroy)
+        self.okBtn = tk.Button(self.popup, text="입장")
         
         self.okBtn.pack()
+        self.input_name.bind('<Return>', self.setUserName)
         self.okBtn.bind('<ButtonRelease-1>',self.setUserName)
         self.popup.mainloop()
     
@@ -53,6 +54,7 @@ class ChatClient:
         print(self.client_sock)
         self.client_sock.sendall(send_data)
         print('전송')
+        self.popup.destroy()
 
     def send(self,e): 
         send_data = self.chatinput.get()
