@@ -95,7 +95,10 @@ class chatClient:
                 self.room.delClient(self)
                 break
             if msg == '/시작':
-                game.startGame(self)
+                print(self.room.clients)
+                for i in self.room.clients:
+                    game.startGame(i)
+                #game.startGame(self)
             msg = self.id+': '+ msg
             self.room.sendMsgAll(msg)  # send msg to all
         self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')

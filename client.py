@@ -15,7 +15,7 @@ class ChatClient:
         print('Connected to ', ChatClient.svrIP, ChatClient.port) 
         self.allChat = ''
 
-    def ui(self):
+    def ui(self): # UI setup
         self.ui = tk.Tk()
         self.ui.title('201744021 송휘 TCP/IP')
         self.ui.geometry('400x490')
