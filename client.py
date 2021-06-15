@@ -18,7 +18,7 @@ class ChatClient:
     def ui(self): # UI setup
         self.ui = tk.Tk()
         self.ui.title('201744021 송휘 TCP/IP')
-        self.ui.geometry('800x490')
+        self.ui.geometry('515x330')
         self.ui.resizable(False, False)
         
         self.contentsFrame = Frame(self.ui)
@@ -31,7 +31,7 @@ class ChatClient:
         self.contents.pack(side='left')
         self.clients = Text(self.clientsFrame, width = 12, height = 20,yscrollcommand = self.scrollbar2.set)
         self.clients.pack(side='left')
-        self.chatinput = tk.Entry(self.ui, width = 40)
+        self.chatinput = tk.Entry(self.ui, width = 43)
         self.sendBtn = tk.Button(self.ui,width = 10, text = '전송')
         self.label = tk.Label(text="참여자")
 
@@ -41,7 +41,7 @@ class ChatClient:
         self.label.place(x=425)
         self.clientsFrame.place(x=405, y=22)
         self.chatinput.place(x = 10, y = 300)
-        self.sendBtn.place(x = 300, y = 297)
+        self.sendBtn.place(x = 320, y = 297)
         self.chatinput.bind('<Return>', self.send)
         self.sendBtn.bind('<ButtonRelease-1>',self.send)
 
