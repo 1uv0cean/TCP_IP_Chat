@@ -3,6 +3,8 @@ import socket
 import threading
 import re, random
 
+
+clientsList = []
 class game:
 
     def openDict(self): # open korean dictionary
@@ -65,6 +67,7 @@ class room:
     def __init__(self):
         self.clients = []
         self.allChat=None
+        
 
     def addClient(self, c):  # add Client
         self.clients.append(c)
@@ -74,7 +77,7 @@ class room:
 
     def sendMsgAll(self, msg):  # send msg to all
         for i in self.clients:
-            i.Send(msg)
+            i.send(msg)
 
 
 class chatClient:  
@@ -83,27 +86,43 @@ class chatClient:
         self.id = None  # Client id
         self.soc = soc  
 
-    def Recv(self):
+    def recv(self):
         self.id = self.soc.recv(1024).decode()
+        clientsList.append(self.id)
+        self.refreshClient()
+
         msg = self.id + '님이 입장하셨습니다'
         self.room.sendMsgAll(msg)
+        print(msg)
 
         while True:
             msg = self.soc.recv(1024).decode()  # read msg
             if msg == '/종료':  
                 self.soc.sendall(msg.encode(encoding='utf-8'))  # send exit msg to sender
                 self.room.delClient(self)
+                clientsList.remove(self.id)
                 break
+            '''
             if msg == '/시작':
                 print(self.room.clients)
-                for i in self.room.clients:
-                    game.startGame(i)
+                self.soc.sendall(game.startGame(self))
                 #game.startGame(self)
+            '''
             msg = self.id+': '+ msg
             self.room.sendMsgAll(msg)  # send msg to all
+            print(msg)
         self.room.sendMsgAll(self.id + '님이 퇴장하셨습니다.')
+        self.refreshClient()
+        
+    def refreshClient(self):
+        self.sendList = ''
+        for i in range(len(clientsList)):
+            print(clientsList[i])
+            self.sendList += clientsList[i]+"|"
+        msg = '[접속명단]|'+ self.sendList
+        self.room.sendMsgAll(msg)
 
-    def Send(self, msg):
+    def send(self, msg):
         self.soc.sendall(msg.encode(encoding='utf-8'))
 
 
@@ -130,7 +149,7 @@ class chatServer:
             print(addr, 'Connected')
             c = chatClient(self.room, client_soc)
             self.room.addClient(c)
-            th = threading.Thread(target=c.Recv)
+            th = threading.Thread(target=c.recv)
             th.start()
 
         self.server_soc.close()

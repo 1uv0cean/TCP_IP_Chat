@@ -18,18 +18,33 @@ class ChatClient:
     def ui(self): # UI setup
         self.ui = tk.Tk()
         self.ui.title('201744021 송휘 TCP/IP')
-        self.ui.geometry('400x490')
+        self.ui.geometry('800x490')
         self.ui.resizable(False, False)
-
-        self.contents = tk.Label(self.ui, justify = "left")
+        
+        self.contentsFrame = Frame(self.ui)
+        self.clientsFrame = Frame(self.ui)
+        self.scrollbar = Scrollbar(self.contentsFrame)
+        self.scrollbar.pack(side='right',fill='y')
+        self.scrollbar2 = Scrollbar(self.clientsFrame)
+        self.scrollbar2.pack(side='right',fill='y')
+        self.contents = Text(self.contentsFrame, width = 52, height = 21 ,yscrollcommand = self.scrollbar.set)
+        self.contents.pack(side='left')
+        self.clients = Text(self.clientsFrame, width = 12, height = 20,yscrollcommand = self.scrollbar2.set)
+        self.clients.pack(side='left')
         self.chatinput = tk.Entry(self.ui, width = 40)
         self.sendBtn = tk.Button(self.ui,width = 10, text = '전송')
+        self.label = tk.Label(text="참여자")
 
-        self.contents.place(x=10, y=10)
-        self.chatinput.place(x = 10, y = 450)
-        self.sendBtn.place(x = 300, y = 446)
+        self.scrollbar['command'] = self.contents.yview
+        self.scrollbar2['command'] = self.clients.yview
+        self.contentsFrame.place(x=10, y=10)
+        self.label.place(x=425)
+        self.clientsFrame.place(x=405, y=22)
+        self.chatinput.place(x = 10, y = 300)
+        self.sendBtn.place(x = 300, y = 297)
         self.chatinput.bind('<Return>', self.send)
         self.sendBtn.bind('<ButtonRelease-1>',self.send)
+
 
     def userName(self):
         self.popup = tk.Tk()
@@ -46,35 +61,42 @@ class ChatClient:
         self.popup.mainloop()
     
     def setUserName(self,e): 
-        send_data = self.input_name.get()
+        self.send_data = self.input_name.get()
         self.input_name.delete(0, tk.END)
         self.input_name.config(text='')
-        print(type(send_data))
-        send_data = send_data.encode(encoding='utf-8')
-        print(self.client_sock)
-        self.client_sock.sendall(send_data)
-        print('전송')
+        self.send_data = self.send_data.encode(encoding='utf-8')
+        self.client_sock.sendall(self.send_data)
         self.popup.destroy()
+        
 
     def send(self,e): 
         send_data = self.chatinput.get()
         self.chatinput.delete(0, tk.END)
         self.chatinput.config(text='')
-        print(type(send_data))
         send_data = send_data.encode(encoding='utf-8')
-        print(self.client_sock)
         self.client_sock.sendall(send_data)
-        print('전송')
 
 
     def recv(self): 
-        while True: 
-            recv_data = self.client_sock.recv(1024).decode() + '\n' 
-            print(recv_data) 
-            self.allChat += recv_data
-            print(self.allChat)
-            self.contents.config(text=self.allChat)
-
+        while True:
+            recv_data = self.client_sock.recv(1024).decode() + '\n'
+            print(recv_data)
+            while True:
+                if recv_data[0:6] == "[접속명단]":
+                    clientList = str(recv_data).split("|")
+                    del clientList[0]
+                    welcomMsg=clientList[len(clientList)-1]
+                    del clientList[len(clientList)-1]
+                    print(clientList)
+                    self.clients.delete("1.0", "end")
+                    for i in clientList:
+                        self.clients.insert("end",i+'\n')
+                    self.contents.insert("end",str(welcomMsg))
+                    break
+                else:         
+                    self.allChat += recv_data
+                    self.contents.insert("end",str(recv_data))
+                    break
     def run(self):
         self.conn()
         self.userName()
