@@ -102,7 +102,12 @@ TCP/IP 강의시간에 배운 multi-thread의 개념을 활용하여 하나의 �
 
 <img src = "img/exit.png">
 
+
 <br/>
+
+
+## ⛏ To - Do
+- 끝말잇기 게임 기능을 추가하려 했으나 다른 client들과 연동되지 않는 issue 발생.
 
 
 ## 🔧 Tech
