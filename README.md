@@ -1,69 +1,89 @@
-# 201744021 송휘 채팅 
-## Low-floor bus reservation system for the weak.  
-> JunctionX Seoul 2021  
+# 201744021 송휘 채팅 프로그램
+## Chat program with multi-thread
+> TCP/IP final exam report
 
 <br/>
-
-## 🍀 Team :: 컴정스토리 ( aka CS Story )
-
-👩🏻‍✈️ [Leader] [한선희](https://github.com/tjshee39) : Front-End, PM  
-👩🏻‍💻 [이샘미](https://github.com/saemmilee) : Back-End, DBA  
-👩🏻‍💻 [홍주희](https://github.com/wngml317) : Back-End, DBA  
-👨🏻‍💻 [송 휘](https://github.com/songhwee1) : Back-End   
-👨🏻‍💻 [차민재](https://github.com/charmingjae) : Front-End, Sub-PM   
-
-<br/>  
-
-## 🤝 Partner Track
-
-### [AutoCrypt](https://autocrypt.co.kr/)
-> A company that strives to communicate with a safe future car transportation system.
-
-#### Applied Solutions
-- [FMS(Fleet Management System)](https://autocrypt.co.kr/product-fms)  
-    1. Data Management
-        - Secure data management by storing driver, passenger information and travel details in the blockchain
-    2. Real-time scheduled calls
-        - Real-time low-floor bus bookings based on the needs of the weak
-    3. Vehicle Monitoring
-        - Based on real-time location information, the location and travel path of the vehicle are checked on the map
-
-
-<br/>  
 
 ## 👨🏻‍💻 Overview  
-    The use of the transport system by the weak should be guaranteed by rights, not welfare.  
-As time goes by, the number of vulnerable people is increasing, but people's perceptions and systems are not improving. The low-floor bus system is designed and operated for the weak in transportation, but the disabled person and weak people are not comfortably using the bus.  
-The low-floor bus reservation system currently in place allows reservations by phone or text, but such services are not available to the weak with language and speech impairments.  
-To compensate for these inconveniences, our team planned a simple and intuitive low-floor bus reservation system using the application.
+    Python 기반의 multi-thread 활용 채팅 프로그램
+Server와 Client로 이루어진 <b>다중 접속 채팅 프로그램</b> 입니다.
 
-
-<br/>
-
-## ✈️ TO BE
-Protecting the use of public transportation by the disadvantaged with rights, not welfare, want to tear down the <b>"Barrier"</b> in front of the weak to <b>"Free"</b>. The use of the application makes it easy for the underprivileged to book low-floor buses and allows bus drivers to check their booking information intuitively and unhindered. Furthermore, we strive to improve awareness of the underprivileged and create an equal world.
 
 
 <br/>
 
+
+## ✈️ Development Purpose
+TCP/IP 강의시간에 배운 multi-thread의 개념을 활용하여 하나의 서버에 여러 명의 클라이언트가 접속하여 채팅을 주고 받을 수 있는 프로그램
+
+
+<br/>
+
+
+## ⚙ Design and Capabilities
+<b>[Server](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/server.py)</b>와 <b>[Client](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/client.py)</b>로 구성됩니다.
+<b>threading</b> library를 활용하여 <b>multi-thread</b>를 구현하였습니다.
+<b>tkinter</b> library를 활용하여 <b>GUI</b>를 구성하였습니다.
+
+#### Server.py
+
+   - Class room : 채팅방 유저 관리
+   
+       def addClient : 채팅방에 사용자를 추가
+       
+       def delClient : 채팅방에서 사용자를 삭제
+       
+       def sendMsgAll : 모두에게 message 전송
+ 
+   - Class chatClient : Client와의 통신을 담당
+   
+       def recv : while문을 통하여 data수신 및 수신값에 따른 결과 실행 ('/종료': 퇴장 및 클라이언트 삭제)
+       
+       def refreshClient: Client가 접속/퇴장 할때마다 Client목록 최신화
+       
+       def send : 모든 클라이언트에게 data 전송
+    
+   - Class chatServer : server IP address, port 설정 및 server 실행
+   
+       def open : 설정된 IP address와 port 값으로 TCP socket server 실행
+       
+       def run : open method 실행 및 thread 할당
+       
+#### Client.py
+
+   - Class chatClient : client의 server 접속 및 통신을 담당
+   
+       def conn : server 접속 시도
+       
+       def ui : GUI 구성
+       
+       def userName : 최초 접속시 사용할 이름을 선택하는 팝업 형식의 GUI
+       
+       def setUserName : 최초 입력 값을 이름으로 설정
+       
+       def send : 입력한 data를 server로 전송
+       
+       def recv : server 에서 data 수신 및 화면에 표시(채팅 내용, 접속 인원)
+       
+       def run : conn, userName, ui method 실행 및 thread 할당
+
+
+<br/>
 ## 🔧 Tech
 
-OS :  
+Language :  
 ```
-Android (SDK : 30)
+Python 3.9.2
 ```
 
 BE(Back-End) :
 ```
-Java
+Python 3.9.2
 ```
 
-Database :
+FE(Front-End) :
 ```
-Firebase
+Python 3.9.2 (tkinter)
 ```
 
-<br/>
 
-
-![logo](https://user-images.githubusercontent.com/54883521/119247419-37422d00-bbc4-11eb-911e-8ab2854dc640.png)
