@@ -22,8 +22,8 @@ TCP/IP 강의시간에 배운 multi-thread의 개념을 활용하여 하나의 �
 
 ## ⚙ Design and Capabilities
 <b>[Server](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/server.py)</b>와 <b>[Client](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/client.py)</b>로 구성됩니다.
-<b>threading</b> library를 활용하여 <b>multi-thread</b>를 구현하였습니다.
-<b>tkinter</b> library를 활용하여 <b>GUI</b>를 구성하였습니다.
+<b>threading library</b>를 활용하여 <b>multi-thread</b>를 구현하였습니다.
+<b>tkinter library</b>를 활용하여 <b>GUI</b>를 구성하였습니다.
 
 #### Server.py
 
