@@ -81,6 +81,30 @@ TCP/IP 강의시간에 배운 multi-thread의 개념을 활용하여 하나의 �
 <br/>
 
 
+## 🖥 Launch Screen
+- server 실행시
+
+<img src = "img/openServer.JPG">
+
+- client 실행시
+
+<img src = "img/clientConnect.JPG">
+
+- 닉네임 설정 화면
+
+<img src = "img/usernameInput.png">
+
+- 메인 화면
+
+<img src = "img/main1.png">
+
+- '/종료' 입력시
+
+<img src = "img/exit.png">
+
+<br/>
+
+
 ## 🔧 Tech
 
 Language :  
