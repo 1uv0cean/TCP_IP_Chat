@@ -6,7 +6,7 @@
 
 ## 👨🏻‍💻 Overview  
     Python 기반의 multi-thread 활용 채팅 프로그램
-Server와 Client로 이루어진 <b>다중 접속 채팅 프로그램</b> 입니다.
+[Server](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/server.py)와 [Client](https://github.com/songhwee1/TCP_IP_Chat/blob/main/main/client.py)로 이루어진 <b>다중 접속 채팅 프로그램</b> 입니다.
 
 
 
