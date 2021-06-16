@@ -97,6 +97,15 @@ class ChatClient:
                     self.allChat += recv_data
                     self.contents.insert("end",str(recv_data))
                     break
+                '''
+                elif recv_data[0:6] == "[끝말잇기]":
+                    shiritori = str(recv_data).split("|")
+                    print(shiritori)
+                    self.contents.insert("end",shiritori[1]+shiritori[2])
+                    lastword = shiritori[2]
+                    break
+                '''
+                
     def run(self):
         self.conn()
         self.userName()

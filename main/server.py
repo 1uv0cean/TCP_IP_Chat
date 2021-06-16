@@ -5,6 +5,7 @@ import re, random
 
 
 clientsList = []
+'''
 class game:
 
     def openDict(self): # open korean dictionary
@@ -36,15 +37,21 @@ class game:
         game.extractWord(self)
         game.deleteWord(self)
         
-        msg = "-" * 50
-        self.room.sendMsgAll(msg)
-        msg = '게임을 시작합니다.\n시작단어: '
-        self.room.sendMsgAll(msg)
+        
+
         self.lastWord = random.choice(list(self.wordDict[random.choice(list(self.wordDict.keys()))]))
         self.alreadySet = set()
         self.alreadySet.add(self.lastWord)
-        self.room.sendMsgAll(self.lastWord)
+        
+        msg = '[끝말잇기]\n|'+'-' * 50+'\n'
+        msg += '게임을 시작합니다.\n시작단어: |'
+        msg += self.lastWord
+        
+        self.room.sendMsgAll(msg)
+        
+        
         while True:
+            
             msg = self.soc.recv(1024).decode()  # read msg
             print(msg)
             firstLetter = msg[0]
@@ -61,14 +68,13 @@ class game:
                 self.lastWord = msg
                 msg = self.id+': '+ msg  
             self.room.sendMsgAll(msg)  # send msg to all 
-               
+'''
 
 class room: 
     def __init__(self):
         self.clients = []
         self.allChat=None
         
-
     def addClient(self, c):  # add Client
         self.clients.append(c)
 
@@ -103,11 +109,12 @@ class chatClient:
                 clientsList.remove(self.id)
                 break
             '''
-            if msg == '/시작':
+            if msg == '/시작': # shiritori game
                 print(self.room.clients)
                 self.soc.sendall(game.startGame(self))
                 #game.startGame(self)
             '''
+            
             msg = self.id+': '+ msg
             self.room.sendMsgAll(msg)  # send msg to all
             print(msg)
