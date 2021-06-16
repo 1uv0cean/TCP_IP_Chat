@@ -1,4 +1,4 @@
-# 201744021 송휘 채팅 프로그램
+# 201744021 송휘 TCP/IP 기말고사 
 ## Chat program with multi-thread
 > TCP/IP final exam report
 
@@ -67,6 +67,14 @@ TCP/IP 강의시간에 배운 multi-thread의 개념을 활용하여 하나의 �
        
        def run : conn, userName, ui method 실행 및 thread 할당
 
+
+<br/>
+
+
+## 💡 Distinction
+- 채팅 프로그램 접속 시 닉네임(사용할 이름) 할당 가능
+- 접속중인 client 목록 표시
+- '/종료' 입력 시 종료 message와 함께 종료
 
 <br/>
 
