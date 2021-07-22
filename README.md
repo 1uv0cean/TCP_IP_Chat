@@ -1,4 +1,3 @@
-# 201744021 송휘 TCP/IP 기말고사 
 ## Chat program with multi-thread
 > TCP/IP final exam report
 
